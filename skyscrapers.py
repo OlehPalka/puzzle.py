@@ -1,17 +1,12 @@
 """
 Skscrapers from final
 """
-import doctest
 
 
 def read_input(path: str):
     """
     Read game board file from path.
     Return list of str.
-
-    >>> read_input("check.txt")
-    ['***21**', '412453*', '423145*', '*543215', '*35214*',\
- '*41532*', '*2*1***']
     """
     result = list()
     with open(path) as file:
@@ -86,6 +81,8 @@ def check_uniqueness_in_rows(board: list):
  '*35214*', '*41532*', '*2*1***'])
     False
     """
+    del board[0]
+    del board[-1]
     for element in board:
         element = element[1:-1]
         for symbol in element:
@@ -145,9 +142,11 @@ def check_columns(board: list):
         for element in board:
             part += element[symbol]
         list_of_columns.append(part)
-        result = check_uniqueness_in_rows(part)
-        if not result:
-            return False
+        for element in list_of_columns:
+            element = element[1:-1]
+            for symbol in element:
+                if element.count(symbol) != 1 and symbol not in " *":
+                    return False
     lenth = len(list_of_columns) - 1
     for i in range(lenth):
         if list_of_columns[i][0].isdigit():
@@ -168,9 +167,6 @@ def check_skyscrapers(input_path: str):
     Main function to check the status of skyscraper game board.
     Return True if the board status is compliant with the rules,
     False otherwise.
-
-    >>> check_skyscrapers("check.txt")
-    True
     """
     board = read_input(input_path)
     if check_horizontal_visibility(board):
@@ -178,6 +174,3 @@ def check_skyscrapers(input_path: str):
             if check_not_finished_board(board):
                 return True
     return False
-
-
-print(doctest.testmod())
